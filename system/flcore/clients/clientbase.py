@@ -6,7 +6,7 @@ import os
 from torch.utils.data import DataLoader
 from sklearn.preprocessing import label_binarize
 from sklearn import metrics
-from utils.data_utils import read_client_data
+from system.utils.data_utils import read_client_data
 
 
 class Client(object):
@@ -47,24 +47,27 @@ class Client(object):
         self.loss = nn.CrossEntropyLoss()
         self.optimizer = torch.optim.SGD(self.model.parameters(), lr=self.learning_rate)
         self.learning_rate_scheduler = torch.optim.lr_scheduler.ExponentialLR(
-            optimizer=self.optimizer, 
+            optimizer=self.optimizer,
             gamma=args.learning_rate_decay_gamma
         )
         self.learning_rate_decay = args.learning_rate_decay
 
-
     def load_train_data(self, batch_size=None):
-        if batch_size == None:
+        """
+
+        :rtype: object
+        """
+        if batch_size is None:
             batch_size = self.batch_size
         train_data = read_client_data(self.dataset, self.id, is_train=True)
         return DataLoader(train_data, batch_size, drop_last=True, shuffle=True)
 
     def load_test_data(self, batch_size=None):
-        if batch_size == None:
+        if batch_size is None:
             batch_size = self.batch_size
         test_data = read_client_data(self.dataset, self.id, is_train=False)
         return DataLoader(test_data, batch_size, drop_last=False, shuffle=True)
-        
+
     def set_parameters(self, model):
         for new_param, old_param in zip(model.parameters(), self.model.parameters()):
             old_param.data = new_param.data.clone()
@@ -88,7 +91,7 @@ class Client(object):
         test_num = 0
         y_prob = []
         y_true = []
-        
+
         with torch.no_grad():
             for x, y in testloaderfull:
                 if type(x) == type([]):
@@ -117,7 +120,7 @@ class Client(object):
         y_true = np.concatenate(y_true, axis=0)
 
         auc = metrics.roc_auc_score(y_true, y_prob, average='micro')
-        
+
         return test_acc, test_num, auc
 
     def train_metrics(self):
@@ -161,16 +164,15 @@ class Client(object):
 
     #     return x, y
 
-
     def save_item(self, item, item_name, item_path=None):
-        if item_path == None:
+        if item_path is None:
             item_path = self.save_folder_name
         if not os.path.exists(item_path):
             os.makedirs(item_path)
         torch.save(item, os.path.join(item_path, "client_" + str(self.id) + "_" + item_name + ".pt"))
 
     def load_item(self, item_name, item_path=None):
-        if item_path == None:
+        if item_path is None:
             item_path = self.save_folder_name
         return torch.load(os.path.join(item_path, "client_" + str(self.id) + "_" + item_name + ".pt"))
 

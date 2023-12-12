@@ -2,8 +2,8 @@ import copy
 import torch
 import numpy as np
 import time
-from flcore.clients.clientbase import Client
-from utils.privacy import *
+from system.flcore.clients.clientbase import Client
+from system.utils.privacy import *
 
 
 class clientAVG(Client):
@@ -51,8 +51,8 @@ class clientAVG(Client):
         self.train_time_cost['total_cost'] += time.time() - start_time
 
         if self.privacy:
-            eps, DELTA = get_dp_params(privacy_engine)
-            print(f"Client {self.id}", f"epsilon = {eps:.2f}, sigma = {DELTA}")
+            eps, delta = get_dp_params(privacy_engine)
+            print(f"Client {self.id}", f"epsilon = {eps:.2f}, sigma = {delta}")
 
             for param, param_dp in zip(model_origin.parameters(), self.model.parameters()):
                 param.data = param_dp.data.clone()

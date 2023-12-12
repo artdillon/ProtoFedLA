@@ -5,8 +5,8 @@ import h5py
 import copy
 import time
 import random
-from utils.data_utils import read_client_data
-from utils.dlg import DLG
+from system.utils.data_utils import read_client_data
+from system.utils.dlg import DLG
 
 
 class Server(object):
