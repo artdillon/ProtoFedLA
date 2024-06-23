@@ -1,5 +1,5 @@
-# pFedPS
-pFedPS: Personalized Federated Learning Based on Prototype Similarity across Heterogeneous Clients
+# ProtoFedLA
+ProtoFedLA: Prototype Guided Personalized Federated Learning Based on Localized Aggregation across Heterogeneous Clients
 
 # Code will come soon.
 Look forward to it.
